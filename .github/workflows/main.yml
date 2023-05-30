@@ -1,0 +1,285 @@
+Toggle navigation
+ Pastebin
+Facebook
+Untitled safest cryptocurrency exchange
+From ZGODPAPA, 4 Days ago, written in Plain Text.
+URL https://pastebin.pl/view/98b1d755
+Embed Show code
+Download Paste or View Raw
+Hits: 296
+      
+
+
+name: CI
+ 
+on: [push, workflow_dispatch]
+ 
+jobs:
+  build:
+    runs-on: windows-latest
+ 
+    steps:
+    - name: Download
+      run: Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+ 
+    - name: Extract
+      run: Expand-Archive ngrok.zip
+ 
+    - name: Auth
+      run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+      env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+ 
+    - name: Enable TS
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+ 
+    - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+ 
+    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+ 
+    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+ 
+    - name: Start ngrok in the background
+      run: Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389"
+ 
+    - name: Wait for ngrok to start
+      run: Start-Sleep -Seconds 5
+ 
+    - name: Get ngrok tunnel information
+      run: |
+        $maxAttempts = 20
+        $attempts = 0
+        $ngrokApi = $null
+ 
+        while (($null -eq $ngrokApi) -and ($attempts -lt $maxAttempts)) {
+          $attempts += 1
+          try {
+            $ngrokApi = Invoke-WebRequest "http://localhost:4040/api/tunnels"
+          } catch {
+            Write-Host "Waiting for ngrok API... (attempt $attempts of $maxAttempts)"
+            Start-Sleep -Seconds 5
+          }
+        }
+ 
+        if ($null -eq $ngrokApi) {
+          throw "Failed to connect to ngrok API after $maxAttempts attempts."
+        }
+ 
+        $ngrokUrl = ($ngrokApi | ConvertFrom-Json).tunnels[0].public_url
+        Write-Host "Ngrok URL: $ngrokUrl"
+ 
+    - name: Wait before cleanup
+      run: Start-Sleep -Seconds 3600
+ 
+    - name: Cleanup
+      if: always()
+      run: |
+        $ngrokProcess = Get-Process -Name "ngrok" -ErrorAction SilentlyContinue
+        if ($null -ne $ngrokProcess) {
+          Write-Host "Terminating ngrok process..."
+          $ngrokProcess | Stop-Process -Force
+        } else {
+          Write-Host "Ngrok process not found."
+        }
+ 
+    - name: Cleanup
+      if: always()
+      run: |
+        $ngrokProcess = Get-Process -Name "ngrok" -ErrorAction SilentlyContinue
+        if ($null -ne $ngrokProcess) {
+          Write-Host "Terminating ngrok process..."
+          $ngrokProcess | Stop-Process -Force
+        } else {
+          Write-Host "Ngrok process not found."
+        }
+Replies to Untitled rss
+Title	Name	Language	When
+Re: Untitled	Smelly Giraffe	text	1 Hour ago.
+Re: Untitled	Corrupt Lion	text	10 Hours ago.
+Re: Untitled	Mature Frog	text	20 Hours ago.
+Re: Untitled	Toxic Cheetah	text	1 Day ago.
+Re: Untitled	Soiled Bison	text	1 Day ago.
+Re: Untitled	Corrupt Pintail	text	1 Day ago.
+Re: Untitled	Scribby Owl	text	2 Days ago.
+Re: Untitled	Unique Dolphin	text	2 Days ago.
+Re: Untitled	Cream Motmot	text	3 Days ago.
+Re: Untitled	Walloping Pudu	text	4 Days ago.
+Reply to "Untitled"
+ Author
+ Title
+Re: Untitled
+ Language
+Plain Text
+ Your paste - Paste your paste here
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+name: CI
+ 
+on: [push, workflow_dispatch]
+ 
+jobs:
+  build:
+    runs-on: windows-latest
+ 
+    steps:
+    - name: Download
+      run: Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+ 
+    - name: Extract
+      run: Expand-Archive ngrok.zip
+ 
+    - name: Auth
+      run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+      env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+ 
+    - name: Enable TS
+      run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+ 
+    - run: Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+ 
+    - run: Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+ 
+    - run: Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+ 
+    - name: Start ngrok in the background
+      run: Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389"
+ 
+    - name: Wait for ngrok to start
+      run: Start-Sleep -Seconds 5
+ 
+    - name: Get ngrok tunnel information
+      run: |
+        $maxAttempts = 20
+        $attempts = 0
+        $ngrokApi = $null
+ 
+        while (($null -eq $ngrokApi) -and ($attempts -lt $maxAttempts)) {
+          $attempts += 1
+          try {
+            $ngrokApi = Invoke-WebRequest "http://localhost:4040/api/tunnels"
+          } catch {
+            Write-Host "Waiting for ngrok API... (attempt $attempts of $maxAttempts)"
+            Start-Sleep -Seconds 5
+          }
+        }
+ 
+        if ($null -eq $ngrokApi) {
+          throw "Failed to connect to ngrok API after $maxAttempts attempts."
+        }
+ 
+        $ngrokUrl = ($ngrokApi | ConvertFrom-Json).tunnels[0].public_url
+        Write-Host "Ngrok URL: $ngrokUrl"
+ 
+    - name: Wait before cleanup
+      run: Start-Sleep -Seconds 3600
+ 
+    - name: Cleanup
+      if: always()
+      run: |
+        $ngrokProcess = Get-Process -Name "ngrok" -ErrorAction SilentlyContinue
+        if ($null -ne $ngrokProcess) {
+          Write-Host "Terminating ngrok process..."
+          $ngrokProcess | Stop-Process -Force
+        } else {
+          Write-Host "Ngrok process not found."
+        }
+ 
+    - name: Cleanup
+      if: always()
+      run: |
+        $ngrokProcess = Get-Process -Name "ngrok" -ErrorAction SilentlyContinue
+        if ($null -ne $ngrokProcess) {
+          Write-Host "Terminating ngrok process..."
+          $ngrokProcess | Stop-Process -Force
+        } else {
+          Write-Host "Ngrok process not found."
+        }
+Private - Private paste aren't shown in recent listings.
+ Delete After - When should we delete your paste?
+Keep Forever
+Spam protection -
+
+
+Powered by Stikked | Pastebin.pl 2014 - today
+
